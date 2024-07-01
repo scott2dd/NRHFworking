@@ -1,5 +1,7 @@
 #moved functions to module on 5/8/24
 include("MakeProblems.jl")
+using HybridUAVPlanning
+using JLD2
 ##  Make 1 lattice 
 lattice_inst = MakeProblems.make_instance3D([25, 25, 1 ], abs(rand(Int)));
 maximum(nonzeros(lattice_inst.C))
@@ -7,7 +9,7 @@ graph = make_graph(lattice_inst)
 plot_euc_graph(lattice_inst)
 
 ## make 1 euc...
-euc_inst = make_instance_euc(500, abs(rand(Int)), conn = 4, Dim = 2)
+euc_inst = MakeProblems.make_instance_euc(500, abs(rand(Int)), conn = 4, Dim = 2)
 graph = make_graph(euc_inst)
 plot_euc_graph(euc_inst)
 
@@ -21,7 +23,7 @@ for N in Nvec
     println(N)  
     for k in 1:10
         println("  $k" )
-        euc_inst = make_instance_euc(N, N*1876+k, conn = conn, Dim = 3)
+        euc_inst = MakeProblems.make_instance_euc(N, N * 1876 + k, conn=conn, Dim=3)
         @save "Problems\\euc_probs_disc\\$(N)_$(conn)conn_$(k)" euc_inst
     end
 end
@@ -32,7 +34,7 @@ for N in Nvec
     println(N)  
     for k in 1:10
         println("  $k" )
-        lattice_inst = make_instance3D([N, N, 5], N*1876+k)
+        lattice_inst = MakeProblems.make_instance3D([N, N, 5], N * 1876 + k)
         @save "Problems\\lattice_probs_disc\\$(N)_$(k)" lattice_inst
     end
 end
@@ -46,19 +48,18 @@ for N in Nvec
     println(N)  
     for k in 1:10
         println("  $k" )
-        euc_inst = make_instance_euc(N, N*1876+k, conn = conn, Dim = 2)
+        euc_inst = MakeProblems.make_instance_euc(N, N * 1876 + k, conn=conn, Dim=2)
         @save "Problems\\euc_probs2D\\$(N)_$(k)" euc_inst #$(conn)conn_
     end
 end
 
 ## Make 2D lattice problems...
 Nvec = 5:100
-Nvec = 51:100
 for N in Nvec
     println(N)  
     for k in 1:10
         println("  $k" )
-        lattice_inst = make_instance3D([N, N, 1], N*1876+k)
+        lattice_inst = MakeProblems.make_instance3D([N, N, 1], N * 1876 + k)
         @save "Problems\\lattice_probs_2D\\$(N)_$(k)" lattice_inst
     end
 end
@@ -72,7 +73,6 @@ Nvec = [50:1000:2000; 2000:2000:20000]
 
 connvec = [3, 4, 5, 8, 10, 12]
 for N in Nvec
-    # N < 14000 && continue
     printstyled("N =  $N \n",color=:green)
     for conn in connvec
         print("$(conn)conn, " )
